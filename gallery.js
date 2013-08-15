@@ -56,6 +56,8 @@ var gallery = {
     directoryPath = (this.static) ? this.static + "/" + this.directory : this.directory,
     me = this;
 
+    directoryPath = path.resolve(this.static, this.directory);
+    console.log("reading directory: " + directoryPath);
 
     var walker  = walk.walk(directoryPath, { followLinks: false });
 
@@ -110,6 +112,7 @@ var gallery = {
     dirHash = {};
     for (var i=0; i<files.length; i++){
       // Process a single file
+      console.log("Building File : " + files[i].rootDir + path.sep + files[i].name);
       var file = files[i],
       dirs = file.rootDir.split("/"),
       dirHashKey = "",
@@ -123,9 +126,10 @@ var gallery = {
 
 
         if (!dirHash.hasOwnProperty(dirHashKey)){
+          console.log("coming to create dir hash " + dirHashKey);
           // If we've never seen this album before, let's create it
           var currentAlbumPath = dirs.slice(0, j+1).join('/'); // reconstruct the current path with the path slashes
-          dirHash[dirHashKey] = true // TODO - consider binding the album to this hash, and even REDIS-ing..
+          dirHash[dirHashKey] = true; // TODO - consider binding the album to this hash, and even REDIS-ing..
 
           var newAlbum = {
             name: curDir,
@@ -152,7 +156,7 @@ var gallery = {
           }
         }
       }
-      var filepath = file.rootDir + '/' + file.name
+      var filepath = file.rootDir + '/' + file.name;
       if(file.name == "info.json") {
         var fullPath = gallery.directory + "/" + filepath;
         fullPath = (gallery.static) ? gallery.static + "/" + fullPath: fullPath;
@@ -178,21 +182,23 @@ var gallery = {
           name: photoName,
           path: filepath
         };
-  
+
         //curAlbum.photos.push(photo);
-  
+
         // we have a photo object - let's try get it's exif data. We've
         // already pushed into curAlbum, no rush getting exif now!
         // Create a closure to give us scope to photo
-        (function(photo, curAlbum){
-          var fullPath = gallery.directory + "/" + photo.path;
-          fullPath = (gallery.static) ? gallery.static + "/" + fullPath: fullPath;
-  
-          exif(fullPath, photo, function(err, exifPhoto){
-            // no need to do anything with our result - we've altered
-            // the photo object..
-          });
-        })(photo, curAlbum);
+/*
+ *        (function(photo, curAlbum){
+ *          var fullPath = gallery.directory + "/" + photo.path;
+ *          fullPath = (gallery.static) ? gallery.static + "/" + fullPath: fullPath;
+ *
+ *          exif(fullPath, photo, function(err, exifPhoto){
+ *            // no need to do anything with our result - we've altered
+ *            // the photo object..
+ *          });
+ *        })(photo, curAlbum);
+ */
         curAlbum.photos.push(photo);
       }
     }
@@ -385,6 +391,7 @@ var gallery = {
     this.init(options);
 
     return function(req, res, next){
+      //console.log("req : ", req);
       var url = req.url,
       rootURL = gallery.rootURL,
       params = req.params,
@@ -401,6 +408,7 @@ var gallery = {
         if (thumbTest.test(url)){
           url = req.url = url.replace("&tn=1", "");
           var imagePath = me.static + decodeURI(url);
+          console.log("imagePath : ", imagePath);
           if (me.imageCache[imagePath]){
             res.contentType('image/jpg');
             res.end(me.imageCache[imagePath], 'binary');
@@ -421,6 +429,7 @@ var gallery = {
                 res.contentType('image/jpg');
                 res.end(binary, 'binary');
                 me.imageCache[imagePath] = binary;
+                //console.log("me.imageCache : ", me.imageCache);
               });
             });
           }

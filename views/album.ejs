@@ -1,5 +1,5 @@
-<link href="/css/gallery.css" rel="stylesheet" type="text/css">
-<link href="/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/blueimp-gallery.min.css">
+<link rel="stylesheet" href="css/demo.css">
 <% if (!album.isRoot){ %>
   <% for (var i=0; i<breadcrumb.length; i++) { %>
   <% if (i==breadcrumb.length-1){ %>
@@ -30,14 +30,23 @@
 <% } %>
 <% if (album.photos.length>0){ %>
   <h2>Photos</h2>
-  <ul class="photos">
+<div id="blueimp-gallery" class="blueimp-gallery">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>
+<div id="links">
     <% album.photos.forEach(function(photo){ %>
-      <li class="thumb">
-        <a href="<%=rootDir %><%= photo.path %>">
-          <img src="/<%= directory %>/<%= photo.path %>&tn=1" alt="<%= photo.name%>"><br />
-          <%= photo.name%>
-        </a>
-      </li>
+      <a class="item" href="/<%= directory %>/<%= photo.path %>" title="<%= photo.name%>">
+        <img src="/<%= directory %>/<%= photo.path %>&tn=1" alt="<%= photo.name%>">
+      </a>
     <% }) %>
-  </ul>
+</div>
 <% } %>
+<script src="js/lib/blueimp-gallery.min.js"></script>
+<script src="js/lib/masonry.pkgd.min.js"></script>
+<script src="js/gallery.js"></script>
