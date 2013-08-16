@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/blueimp-gallery.min.css">
 <link rel="stylesheet" href="css/demo.css">
 <% if (!album.isRoot){ %>
@@ -30,12 +31,10 @@
 <% if (album.photos.length>0){ %>
 <div id="blueimp-gallery" class="blueimp-gallery">
     <div class="slides"></div>
-    <h3 class="title"></h3>
     <a class="prev">‹</a>
     <a class="next">›</a>
     <a class="close">×</a>
     <a class="play-pause"></a>
-    <ol class="indicator"></ol>
 </div>
 <div id="links">
     <% album.photos.forEach(function(photo){ %>
@@ -45,6 +44,22 @@
     <% }) %>
 </div>
 <% } %>
+<script src="js/lib/blueimp-helper.js"></script>
 <script src="js/lib/blueimp-gallery.min.js"></script>
+<script src="js/lib/blueimp-gallery-fullscreen.js"></script>
+<script src="js/lib/blueimp-gallery-indicator.js"></script>
+<script src="js/lib/blueimp-gallery-video.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+/*jslint evil: true */
+/*global window, document*/
+// Including jQuery via the protocol relative url above works for both http and https.
+// Explicitly including jQuery via http allows running the Gallery demo as local file:
+if (!window.jQuery) {
+    document.write(
+        '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"><\/script>'
+    );
+}
+</script>
 <script src="js/lib/masonry.pkgd.min.js"></script>
 <script src="js/gallery.js"></script>
