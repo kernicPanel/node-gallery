@@ -52,8 +52,10 @@ $(function(){
     nextSelector : '#nextPage',  // selector for the NEXT link (to page 2)
     itemSelector : '.item',     // selector for all items you'll retrieve
     loading: {
+      msgText: "Loading",
       finishedMsg: 'No more pages to load.',
-      img: 'http://i.imgur.com/qkKy8.gif'
+      //img: 'http://i.imgur.com/qkKy8.gif'
+      img: '../img/loader.gif'
     }
   },
 

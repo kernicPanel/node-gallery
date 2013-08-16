@@ -54,6 +54,18 @@ h1 {
   /*top: 1000px;*/
 }
 
+#infscr-loading {
+  position: absolute;
+  text-align: center;
+  width: 40%;
+  background: rgba(0, 0, 0, 0.33);
+  bottom: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  margin: 0 30%;
+  border: 2px solid rgba(255, 255, 255, 0.54);
+}
 
 @media (min-width: 481px) {
   .navigation {
