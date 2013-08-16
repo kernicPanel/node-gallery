@@ -2,7 +2,7 @@
 var gallery = require('./gallery'),
 express = require('express'),
 util = require('util'),
-port = 3000;
+port = 4000;
 
 var app = (parseFloat(express.version)<3.0) ? express.createServer() : express();
 app.set('view engine', 'ejs');
