@@ -21,6 +21,10 @@ body {
   -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
 }
+
+html { height: 100%; }
+body { min-height: 100%; }
+
 a {
   color: orange;
   text-decoration: none;

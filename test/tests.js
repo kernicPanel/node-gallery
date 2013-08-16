@@ -46,6 +46,7 @@ gallery.init(galleryParams, function(err, album){
   console.log('[gallery.getPhoto()] Starting gallery tests'.yellow);
   gallery.getPhoto(req, function(err, photo){
     assert.ok(!err);
+    console.log("photo : ", photo);
     console.log('[gallery.getPhoto()] Pass ✓'.green);
   });
 

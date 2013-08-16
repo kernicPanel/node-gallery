@@ -334,12 +334,14 @@ var gallery = {
    * });
    */
   getAlbum: function(params, cb){
+    console.log("params : ", params);
     var album = this.album,
-    albumPath = params.album;
+    albumPath = params.album,
+    page = params.page;
 
     if (!albumPath || albumPath==''){
       //return cb(null, album);
-      return this.afterGettingItem(null, {type: 'album', album: album}, cb);
+      return this.afterGettingItem(null, {type: 'album', album: album, page:page}, cb);
     }
 
     var dirs = albumPath.split('/');
@@ -358,7 +360,7 @@ var gallery = {
     if (album.hash !== albumPath.replace(/\//g, "")){
       return cb('Failed to load album ' + albumPath, null);
     }
-    return this.afterGettingItem(null, {type: 'album', album: album}, cb);
+    return this.afterGettingItem(null, {type: 'album', album: album, page:page}, cb);
 
   },
   /*
@@ -451,6 +453,21 @@ var gallery = {
       }
     });
   },
+  paginate: function(options){
+    var array = options.array,
+        page = options.page || 0,
+        slicedArray = [];
+
+    console.log("array : ", array);
+    console.log("page : ", page);
+    var start = page * 10;
+    var end = start + 10;
+    console.log("start : ", start);
+    console.log("end : ", end);
+    slicedArray = array.slice(start, end);
+    console.log("return slicedArray : ", slicedArray);
+    return slicedArray;
+  },
   middleware: function(options){
     var me = this;
     this.init(options);
@@ -460,51 +477,13 @@ var gallery = {
       var url = req.url,
       rootURL = gallery.rootURL,
       params = req.params,
+      query = req.query,
+      page = parseInt(req.query.page, 10) || 0,
       requestParams = {},
       image = false;
 
-
-
       var staticTest = /\.png|\.jpg|\.css|\.js/i;
       if (rootURL=="" || url.indexOf(rootURL)===-1 /*|| staticTest.test(url)*/){
-
-//     This isn't working just quite yet, let's skip over it
-        /*
-         *var thumbTest =  /[a-zA-Z0-9].*(\.png|\.jpg)&tn=1/i;
-         *if (thumbTest.test(url)){
-         *  url = req.url = url.replace("&tn=1", "");
-         *  var imagePath = me.static + decodeURI(url);
-         *  console.log("imagePath : ", imagePath);
-         *  if (me.imageCache[imagePath]){
-         *    res.contentType('image/jpg');
-         *    res.end(me.imageCache[imagePath], 'binary');
-         *  }else{
-         *    fs.readFile(imagePath, 'binary', function(err, file){
-         *      if (err){
-         *        //console.log(err);
-         *        return res.send(err);
-         *      }
-         *      im.resize({
-         *        srcData: file,
-         *        width:   256
-         *      }, function(err, binary, stderr){
-         *        if (err){
-         *          util.inspect(err);
-         *          res.send('error generating thumb');
-         *        }
-         *        //fs.writeFileSync(imagePath, binary, 'binary');
-         *        //console.log('resized kittens.jpg to fit within 256x256px')
-         *        res.contentType('image/jpg');
-         *        res.end(binary, 'binary');
-         *        me.imageCache[imagePath] = binary;
-         *        //console.log("me.imageCache : ", me.imageCache);
-         *      });
-         *    });
-         *  }
-         *  return;
-         *}
-         */
-        // Not the right URL. We have no business here. Onwards!
         return next();
       }
 
@@ -519,6 +498,7 @@ var gallery = {
         var filepath = url.trim(),
         isFile = /\b.(jpg|bmp|jpeg|gif|png|tif)\b$/;
         image = isFile.test(filepath.toLowerCase());
+        filepath = filepath.split("?")[0];
         filepath = filepath.split("/");
         if (image){ // If we detect image file name at end, get filename
           image = filepath.pop();
@@ -527,6 +507,7 @@ var gallery = {
 
         requestParams = {
           album: filepath,
+          page: page,
           photo: image
         };
 
@@ -536,10 +517,14 @@ var gallery = {
 
       getterFunction.apply(gallery, [ requestParams, function(err, data){
         req.gallery = data;
+        req.gallery.album.slicedPhotos = me.paginate({ array: data.album.photos, page: page });
+        req.gallery.album.nextpage = page + 1;
+        console.log("page : ", page);
+        console.log("page + 1 : ", page + 1);
         return next(err);
         //Should we do this here? res.render(data.type + '.ejs', data);
       }]);
-    }
+    };
   }
 };
 

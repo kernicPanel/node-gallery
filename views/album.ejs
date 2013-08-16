@@ -1,6 +1,10 @@
+<html>
+<head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/blueimp-gallery.min.css">
 <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
 <% if (!album.isRoot){ %>
   <% for (var i=0; i<breadcrumb.length; i++) { %>
   <% if (i==breadcrumb.length-1){ %>
@@ -28,7 +32,7 @@
     <% }) %>
   </ul>
 <% } %>
-<% if (album.photos.length>0){ %>
+<% if (album.slicedPhotos.length>0){ %>
 <div id="blueimp-gallery" class="blueimp-gallery">
     <div class="slides"></div>
     <a class="prev">‹</a>
@@ -37,12 +41,14 @@
     <a class="play-pause"></a>
 </div>
 <div id="links">
-    <% album.photos.forEach(function(photo){ %>
+    <% album.slicedPhotos.forEach(function(photo){ %>
       <a class="item" href="/<%= directory %>/<%= photo.path %>" title="<%= photo.name%>">
         <img src="/thumbs<%= photo.path %>" alt="<%= photo.name%>">
       </a>
     <% }) %>
+<a href="?page=<%= album.nextpage %>" id="nextPage"></a>
 </div>
+<div class="navigation">nav</div>
 <% } %>
 <script src="js/lib/blueimp-helper.js"></script>
 <script src="js/lib/blueimp-gallery.min.js"></script>
@@ -61,5 +67,9 @@ if (!window.jQuery) {
     );
 }
 </script>
+<script src="js/lib/imagesloaded.pkgd.js"></script>
 <script src="js/lib/masonry.pkgd.min.js"></script>
+<script src="js/lib/jquery.infinitescroll.js"></script>
 <script src="js/gallery.js"></script>
+</body>
+</html>
