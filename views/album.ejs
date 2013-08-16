@@ -10,7 +10,6 @@
 
   <% } %>
 <% } %>
-<h1><%= album.prettyName %></h1>
   <% if (album.description){ %>
     <p><%- album.description %></p>
   <% } %>
@@ -29,7 +28,6 @@
   </ul>
 <% } %>
 <% if (album.photos.length>0){ %>
-  <h2>Photos</h2>
 <div id="blueimp-gallery" class="blueimp-gallery">
     <div class="slides"></div>
     <h3 class="title"></h3>
@@ -42,7 +40,7 @@
 <div id="links">
     <% album.photos.forEach(function(photo){ %>
       <a class="item" href="/<%= directory %>/<%= photo.path %>" title="<%= photo.name%>">
-        <img src="/<%= directory %>/<%= photo.path %>&tn=1" alt="<%= photo.name%>">
+        <img src="/thumbs<%= photo.path %>" alt="<%= photo.name%>">
       </a>
     <% }) %>
 </div>

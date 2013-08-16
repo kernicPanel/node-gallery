@@ -53,11 +53,11 @@ var gallery = {
    */
   readFiles: function(params, cb){
     var files   = [],
-    directoryPath = (this.static) ? this.static + "/" + this.directory : this.directory,
+    directoryPath = (this.static) ? this.static + "/" + this.directory :  "/" + this.directory,
     me = this;
 
     directoryPath = path.resolve(this.static, this.directory);
-    console.log("reading directory: " + directoryPath);
+    //console.log("reading directory: " + directoryPath);
 
     var walker  = walk.walk(directoryPath, { followLinks: false });
 
@@ -101,7 +101,8 @@ var gallery = {
    * Private function to build an albums object from the files[] array
    */
   buildAlbums: function(files, cb){
-    var albums = {
+    var me = this,
+    albums = {
       name: this.name,
       prettyName: this.name,
       isRoot: true,
@@ -112,7 +113,7 @@ var gallery = {
     dirHash = {};
     for (var i=0; i<files.length; i++){
       // Process a single file
-      console.log("Building File : " + files[i].rootDir + path.sep + files[i].name);
+      //console.log("Building File : " + files[i].rootDir + path.sep + files[i].name);
       var file = files[i],
       dirs = file.rootDir.split("/"),
       dirHashKey = "",
@@ -122,6 +123,10 @@ var gallery = {
       // ""!==dirs[0] as we don't want to iterate if we have a file that is a photo at root
       for (var j=0; j<dirs.length && dirs[0]!==""; j++){
         var curDir = dirs[j];
+        console.log("curDir : ", curDir);
+        if (curDir === 'thumbs') {
+          continue;
+        }
         dirHashKey += curDir;
 
 
@@ -156,6 +161,7 @@ var gallery = {
           }
         }
       }
+      console.log("file.rootDir : ", file.rootDir);
       var filepath = file.rootDir + '/' + file.name;
       if(file.name == "info.json") {
         var fullPath = gallery.directory + "/" + filepath;
@@ -182,6 +188,8 @@ var gallery = {
           name: photoName,
           path: filepath
         };
+        //console.log("filepath : ", filepath);
+        me.createThumb(filepath);
 
         //curAlbum.photos.push(photo);
 
@@ -245,6 +253,7 @@ var gallery = {
    * Public API to node-gallery, currently just returns JSON block
    */
   init: function(params, cb){
+    console.log("init : ");
     var me =  this,
     directory = params.directory,
     staticDir = params.static;
@@ -386,6 +395,61 @@ var gallery = {
 
     return cb(err, data);
   },
+  createThumb: function(filepath){
+    console.log("\n>>> createThumb : ");
+    console.log("filepath : ", filepath);
+    console.log("gallery.static : ", gallery.static);
+    console.log("gallery.directory : ", gallery.directory);
+    var thumbPath = gallery.static + '/thumbs/' + filepath;
+    console.log("thumbPath : ", thumbPath);
+    filepath = gallery.static + '/' + gallery.directory + '/' + filepath;
+    console.log("filepath : ", filepath);
+    var thumbDir = path.dirname(thumbPath);
+    console.log("thumbDir : ", thumbDir);
+    fs.exists(thumbPath, function (exists) {
+      //console.log("gallery : ", gallery);
+      //util.debug(exists ? "thumb exists" : "no thumb!");
+      if (!exists) {
+        fs.readFile(filepath, 'binary', function(err, file){
+          if (err){
+            console.log(err);
+            //return res.send(err);
+          }
+          im.resize({
+            srcData: file,
+            width:   256
+          }, function(err, binary, stderr){
+            if (err){
+              util.inspect(err);
+              res.send('error generating thumb');
+            }
+            /*
+             *console.log("me.static : ", me.static);
+             *console.log("url : ", url);
+             *console.log("decodeURI(url) : ", decodeURI(url));
+             */
+            fs.exists(thumbDir, function (exists) {
+              if (exists) {
+                fs.writeFileSync(thumbPath, binary, 'binary');
+              }
+              else {
+                fs.mkdir(thumbDir, function(){
+                  fs.writeFileSync(thumbPath, binary, 'binary');
+                });
+              }
+            });
+            //console.log('resized kittens.jpg to fit within 256x256px')
+            /*
+             *res.contentType('image/jpg');
+             *res.end(binary, 'binary');
+             *me.imageCache[imagePath] = binary;
+             */
+            //console.log("me.imageCache : ", me.imageCache);
+            });
+        });
+      }
+    });
+  },
   middleware: function(options){
     var me = this;
     this.init(options);
@@ -404,37 +468,41 @@ var gallery = {
       if (rootURL=="" || url.indexOf(rootURL)===-1 /*|| staticTest.test(url)*/){
 
 //     This isn't working just quite yet, let's skip over it
-        var thumbTest =  /[a-zA-Z0-9].*(\.png|\.jpg)&tn=1/i;
-        if (thumbTest.test(url)){
-          url = req.url = url.replace("&tn=1", "");
-          var imagePath = me.static + decodeURI(url);
-          console.log("imagePath : ", imagePath);
-          if (me.imageCache[imagePath]){
-            res.contentType('image/jpg');
-            res.end(me.imageCache[imagePath], 'binary');
-          }else{
-            fs.readFile(imagePath, 'binary', function(err, file){
-              if (err){
-                console.log(err);
-                return res.send(err);
-              }
-              im.resize({
-                srcData: file,
-                width:   256
-              }, function(err, binary, stderr){
-                if (err){
-                  util.inspect(err);
-                  res.send('error generating thumb');
-                }
-                res.contentType('image/jpg');
-                res.end(binary, 'binary');
-                me.imageCache[imagePath] = binary;
-                //console.log("me.imageCache : ", me.imageCache);
-              });
-            });
-          }
-          return;
-        }
+        /*
+         *var thumbTest =  /[a-zA-Z0-9].*(\.png|\.jpg)&tn=1/i;
+         *if (thumbTest.test(url)){
+         *  url = req.url = url.replace("&tn=1", "");
+         *  var imagePath = me.static + decodeURI(url);
+         *  console.log("imagePath : ", imagePath);
+         *  if (me.imageCache[imagePath]){
+         *    res.contentType('image/jpg');
+         *    res.end(me.imageCache[imagePath], 'binary');
+         *  }else{
+         *    fs.readFile(imagePath, 'binary', function(err, file){
+         *      if (err){
+         *        //console.log(err);
+         *        return res.send(err);
+         *      }
+         *      im.resize({
+         *        srcData: file,
+         *        width:   256
+         *      }, function(err, binary, stderr){
+         *        if (err){
+         *          util.inspect(err);
+         *          res.send('error generating thumb');
+         *        }
+         *        //fs.writeFileSync(imagePath, binary, 'binary');
+         *        //console.log('resized kittens.jpg to fit within 256x256px')
+         *        res.contentType('image/jpg');
+         *        res.end(binary, 'binary');
+         *        me.imageCache[imagePath] = binary;
+         *        //console.log("me.imageCache : ", me.imageCache);
+         *      });
+         *    });
+         *  }
+         *  return;
+         *}
+         */
         // Not the right URL. We have no business here. Onwards!
         return next();
       }

@@ -9,3 +9,6 @@
 /docs
 /docs/*
 node_modules
+photos
+thumbs
+npm-debug.log

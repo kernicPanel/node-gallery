@@ -1,25 +1,27 @@
 var assert = require('assert'),
 colors = require('colors'),
 // require the stuff actually being tested
-exif = require('../exif.js'),
+//exif = require('../exif.js'),
 gallery = require('../gallery.js');
 
 /*
  * Test the Exif module
  */
-var aPhoto = { name: 'SomePhoto', path: 'photos/lake.jpg' };
-console.log('[exif] Starting exif tests'.yellow);
-exif("test/" + aPhoto.path, aPhoto, function(err, photo){
-  assert.equal(photo.name, aPhoto.name);
-  assert.equal(photo.path, aPhoto.path);
-  assert.ok(photo.exif);
-  var ex = photo.exif;
-  assert.equal(ex.Make, "Canon");
-  assert.equal(ex.Model, "Canon EOS 20D");
-  assert.equal(ex.ISO, "200");
-  assert.ok(ex.Time);
-  console.log('[exif] Pass ✓'.green);
-});
+/*
+ *var aPhoto = { name: 'SomePhoto', path: 'photos/lake.jpg' };
+ *console.log('[exif] Starting exif tests'.yellow);
+ *exif("test/" + aPhoto.path, aPhoto, function(err, photo){
+ *  assert.equal(photo.name, aPhoto.name);
+ *  assert.equal(photo.path, aPhoto.path);
+ *  assert.ok(photo.exif);
+ *  var ex = photo.exif;
+ *  assert.equal(ex.Make, "Canon");
+ *  assert.equal(ex.Model, "Canon EOS 20D");
+ *  assert.equal(ex.ISO, "200");
+ *  assert.ok(ex.Time);
+ *  console.log('[exif] Pass ✓'.green);
+ *});
+ */
 
 
 /*
