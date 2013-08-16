@@ -1,11 +1,13 @@
 $(function(){
-  (function($, undefined) {
-    $.extend($.infinitescroll.prototype,{
-      _callback_masonry: function infscr_callback_masonry (newElements) {
-        $(this).masonry('appended',$(newElements));
-      }
-    });
-  })(jQuery);
+  /*
+   *(function($, undefined) {
+   *  $.extend($.infinitescroll.prototype,{
+   *    _callback_masonry: function infscr_callback_masonry (newElements) {
+   *      $(this).masonry('appended',$(newElements));
+   *    }
+   *  });
+   *})(jQuery);
+   */
 
   var $container = $('#links');
 
@@ -43,9 +45,10 @@ $(function(){
    */
 
   $container.infinitescroll({
-    debug: true,
+    //debug: true,
     //navSelector  : '#page_nav',    // selector for the paged navigation
     //binder: $('body'),
+    bufferPx: 600,
     nextSelector : '#nextPage',  // selector for the NEXT link (to page 2)
     itemSelector : '.item',     // selector for all items you'll retrieve
     loading: {
@@ -55,7 +58,17 @@ $(function(){
   },
 
   function( newElements ) {
-    $container.masonry( 'addItems', $( newElements ) );
+    /*
+     *newElements.forEach(function(elem){
+     *  console.log("elem : ", elem);
+     *  $container.append(elem);
+     *  $container.masonry( 'appended', elem );
+     *});
+     */
+    $container.append(newElements);
+    $container.masonry( 'appended', $( newElements ) );
+    //$container.masonry( 'hide',  newElements );
+    //$container.masonry( 'reveal', $( newElements ) );
     $container.imagesLoaded(function(){
       $container.masonry(  );
     });

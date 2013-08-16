@@ -33,6 +33,15 @@
   </ul>
 <% } %>
 <% if (album.slicedPhotos.length>0){ %>
+<div id="links">
+    <% album.slicedPhotos.forEach(function(photo){ %>
+      <a class="item" href="/<%= directory %>/<%= photo.path %>" title="<%= photo.name%>">
+        <img src="/thumbs<%= photo.path %>" alt="<%= photo.name%>">
+      </a>
+    <% }) %>
+</div>
+<a href="?page=<%= album.nextpage %>" id="nextPage"></a>
+<div class="navigation">nav</div>
 <div id="blueimp-gallery" class="blueimp-gallery">
     <div class="slides"></div>
     <a class="prev">‹</a>
@@ -40,15 +49,6 @@
     <a class="close">×</a>
     <a class="play-pause"></a>
 </div>
-<div id="links">
-    <% album.slicedPhotos.forEach(function(photo){ %>
-      <a class="item" href="/<%= directory %>/<%= photo.path %>" title="<%= photo.name%>">
-        <img src="/thumbs<%= photo.path %>" alt="<%= photo.name%>">
-      </a>
-    <% }) %>
-<a href="?page=<%= album.nextpage %>" id="nextPage"></a>
-</div>
-<div class="navigation">nav</div>
 <% } %>
 <script src="js/lib/jquery-1.10.2.js"></script>
 <script src="js/lib/blueimp-helper.js"></script>
