@@ -1,5 +1,4 @@
 window.onload = function () {
-  console.log("load : ");
   var container = document.querySelector('#links'),
     msnry = new Masonry( container, {
     // options

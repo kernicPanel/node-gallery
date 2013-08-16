@@ -1,5 +1,4 @@
 var fs = require('fs'),
-exif = require('./exif.js'),
 walk = require('walk'),
 util = require('util'),
 path = require('path'),
@@ -123,7 +122,7 @@ var gallery = {
       // ""!==dirs[0] as we don't want to iterate if we have a file that is a photo at root
       for (var j=0; j<dirs.length && dirs[0]!==""; j++){
         var curDir = dirs[j];
-        console.log("curDir : ", curDir);
+        //console.log("curDir : ", curDir);
         if (curDir === 'thumbs') {
           continue;
         }
@@ -131,7 +130,7 @@ var gallery = {
 
 
         if (!dirHash.hasOwnProperty(dirHashKey)){
-          console.log("coming to create dir hash " + dirHashKey);
+          //console.log("coming to create dir hash " + dirHashKey);
           // If we've never seen this album before, let's create it
           var currentAlbumPath = dirs.slice(0, j+1).join('/'); // reconstruct the current path with the path slashes
           dirHash[dirHashKey] = true; // TODO - consider binding the album to this hash, and even REDIS-ing..
@@ -161,7 +160,7 @@ var gallery = {
           }
         }
       }
-      console.log("file.rootDir : ", file.rootDir);
+      //console.log("file.rootDir : ", file.rootDir);
       var filepath = file.rootDir + '/' + file.name;
       if(file.name == "info.json") {
         var fullPath = gallery.directory + "/" + filepath;
@@ -253,7 +252,7 @@ var gallery = {
    * Public API to node-gallery, currently just returns JSON block
    */
   init: function(params, cb){
-    console.log("init : ");
+    //console.log("init : ");
     var me =  this,
     directory = params.directory,
     staticDir = params.static;
@@ -396,16 +395,18 @@ var gallery = {
     return cb(err, data);
   },
   createThumb: function(filepath){
-    console.log("\n>>> createThumb : ");
-    console.log("filepath : ", filepath);
-    console.log("gallery.static : ", gallery.static);
-    console.log("gallery.directory : ", gallery.directory);
+    /*
+     *console.log("\n>>> createThumb : ");
+     *console.log("filepath : ", filepath);
+     *console.log("gallery.static : ", gallery.static);
+     *console.log("gallery.directory : ", gallery.directory);
+     */
     var thumbPath = gallery.static + '/thumbs/' + filepath;
-    console.log("thumbPath : ", thumbPath);
+    //console.log("thumbPath : ", thumbPath);
     filepath = gallery.static + '/' + gallery.directory + '/' + filepath;
-    console.log("filepath : ", filepath);
+    //console.log("filepath : ", filepath);
     var thumbDir = path.dirname(thumbPath);
-    console.log("thumbDir : ", thumbDir);
+    //console.log("thumbDir : ", thumbDir);
     fs.exists(thumbPath, function (exists) {
       //console.log("gallery : ", gallery);
       //util.debug(exists ? "thumb exists" : "no thumb!");
