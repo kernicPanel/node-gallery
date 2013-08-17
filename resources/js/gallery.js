@@ -22,11 +22,13 @@ $(function(){
    *});
    */
 
-  $container.masonry({
-    columnWidth: 256,
-    "gutter": 10,
-    "isFitWidth": true,
-    itemSelector: '.item'
+  $container.imagesLoaded(function(){
+    $container.masonry({
+      columnWidth: 256,
+      "gutter": 10,
+      "isFitWidth": true,
+      itemSelector: '.item'
+    });
   });
 
   document.getElementById('links').onclick = function (event) {
