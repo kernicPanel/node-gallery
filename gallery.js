@@ -334,7 +334,6 @@ var gallery = {
    * });
    */
   getAlbum: function(params, cb){
-    console.log("params : ", params);
     var album = this.album,
     albumPath = params.album,
     page = params.page;
@@ -458,14 +457,9 @@ var gallery = {
         page = options.page || 0,
         slicedArray = [];
 
-    console.log("array : ", array);
-    console.log("page : ", page);
     var start = page * 10;
     var end = start + 10;
-    console.log("start : ", start);
-    console.log("end : ", end);
     slicedArray = array.slice(start, end);
-    console.log("return slicedArray : ", slicedArray);
     return slicedArray;
   },
   middleware: function(options){
@@ -519,8 +513,6 @@ var gallery = {
         req.gallery = data;
         req.gallery.album.slicedPhotos = me.paginate({ array: data.album.photos, page: page });
         req.gallery.album.nextpage = page + 1;
-        console.log("page : ", page);
-        console.log("page + 1 : ", page + 1);
         return next(err);
         //Should we do this here? res.render(data.type + '.ejs', data);
       }]);
