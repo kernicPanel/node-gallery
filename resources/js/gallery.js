@@ -1,6 +1,8 @@
 $(function(){
 
-  var $container = $('#links'), gallery;
+  var $container = $('#links'),
+      gallery = false,
+      $links, linksArray;
   //var $container = $('#links');
 
   $container.imagesLoaded(function(){
@@ -24,13 +26,16 @@ $(function(){
         if (index === 1) {
           $container.infinitescroll('retrieve');
         }
+      },
+      onslide: function (index, slide) {
+        $($container.find('a').get(index)).ScrollTo();
       }
     },
 
 
-    links = $(this).find('a');
-    links = links.toArray();
-    gallery = blueimp.Gallery(links, options);
+    $links = $(this).find('a');
+    linksArray = $links.toArray();
+    gallery = blueimp.Gallery(linksArray, options);
   });
 
   $container.infinitescroll({
@@ -53,7 +58,9 @@ $(function(){
     $container.imagesLoaded(function(){
       $container.masonry(  );
     });
-    gallery.add(newElements);
+    if (!!gallery) {
+      gallery.add(newElements);
+    }
   });
 
 });
