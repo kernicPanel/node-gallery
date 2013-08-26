@@ -50,6 +50,7 @@ h1 {
 
 .item {
   margin-top: 10px;
+  display: inline-block;
   /*position: absolute;*/
   /*top: 1000px;*/
 }
