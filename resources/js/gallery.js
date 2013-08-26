@@ -1,26 +1,7 @@
 $(function(){
-  /*
-   *(function($, undefined) {
-   *  $.extend($.infinitescroll.prototype,{
-   *    _callback_masonry: function infscr_callback_masonry (newElements) {
-   *      $(this).masonry('appended',$(newElements));
-   *    }
-   *  });
-   *})(jQuery);
-   */
 
-  var $container = $('#links');
-
-  /*
-   *var container = document.querySelector('#links'),
-   *  msnry = new Masonry( container, {
-   *  // options
-   *  columnWidth: 256,
-   *  "gutter": 10,
-   *  "isFitWidth": true,
-   *  itemSelector: '.item'
-   *});
-   */
+  var $container = $('#links'), gallery;
+  //var $container = $('#links');
 
   $container.imagesLoaded(function(){
     $container.masonry({
@@ -31,20 +12,26 @@ $(function(){
     });
   });
 
-  document.getElementById('links').onclick = function (event) {
+  //document.getElementById('links').onclick = function (event) {
+  $container.on('click', function (event) {
     event = event || window.event;
     var target = event.target || event.srcElement,
     link = target.src ? target.parentNode : target,
-    options = {index: link, event: event},
-    links = this.getElementsByTagName('a');
-    blueimp.Gallery(links, options);
-  };
+    options = {
+      index: link,
+      event: event,
+      onslidecomplete: function (index, slide) {
+        if (index === 1) {
+          $container.infinitescroll('retrieve');
+        }
+      }
+    },
 
-  /*
-   *$container.isotope({
-   *  itemSelector : '.element'
-   *});
-   */
+
+    links = $(this).find('a');
+    links = links.toArray();
+    gallery = blueimp.Gallery(links, options);
+  });
 
   $container.infinitescroll({
     //debug: true,
@@ -54,35 +41,20 @@ $(function(){
     nextSelector : '#nextPage',  // selector for the NEXT link (to page 2)
     itemSelector : '.item',     // selector for all items you'll retrieve
     loading: {
-      msgText: "Loading",
-      finishedMsg: 'No more pages to load.',
-      //img: 'http://i.imgur.com/qkKy8.gif'
+      msgText: "Chargement...",
+      finishedMsg: 'Just married',
       img: '../img/loader.gif'
     }
   },
 
   function( newElements ) {
-    /*
-     *newElements.forEach(function(elem){
-     *  console.log("elem : ", elem);
-     *  $container.append(elem);
-     *  $container.masonry( 'appended', elem );
-     *});
-     */
     $container.append(newElements);
     $container.masonry( 'appended', $( newElements ) );
-    //$container.masonry( 'hide',  newElements );
-    //$container.masonry( 'reveal', $( newElements ) );
     $container.imagesLoaded(function(){
       $container.masonry(  );
     });
-    console.log("newElements : ", newElements);
+    gallery.add(newElements);
   });
 
-  /*
-   *$container.imagesLoaded(function(){
-   *  $container.masonry(  );
-   *});
-   */
 });
 
